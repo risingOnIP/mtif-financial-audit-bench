@@ -251,11 +251,12 @@ def test_run_builds_once_and_preserves_previous_results(checkout, monkeypatch, g
     old.write_text("previous result")
     events, graded_jobs, caches = [], [], []
 
-    def prepare(selected, root, *, dataset_root):
+    def prepare(selected, root, *, dataset_root, output):
         events.append("build")
         assert dataset_root == checkout / "hub-snapshot"
         assert root == checkout and [t.short_name for t in selected] == ["cash"]
-        built = root / "artifacts/harbor"
+        built = output
+        assert built.parent == root / "artifacts/harbor"  # one build folder per job
         built.mkdir(parents=True, exist_ok=True)
         (built / cli.MARKER).write_text('{"build": "current"}')
         return built
@@ -264,7 +265,7 @@ def test_run_builds_once_and_preserves_previous_results(checkout, monkeypatch, g
         assert events[0] == "build" and os.environ["OPENAI_API_KEY"] == "file-key"
         assert kwargs == {"cwd": checkout, "check": True}
         config = JobConfig.model_validate_json(Path(command[command.index("-c") + 1]).read_text())
-        assert config.datasets[0].path == Path("artifacts/harbor")
+        assert config.datasets[0].path == Path("artifacts/harbor") / config.job_name
         assert config.n_concurrent_trials == 25 and config.n_attempts == 8
         assert config.verifier.disable
         assert config.jobs_dir == Path("jobs")

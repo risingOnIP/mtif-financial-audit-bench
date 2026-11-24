@@ -53,13 +53,15 @@ def pin_apt_snapshot(dockerfile: Path) -> None:
     dockerfile.write_text("\n".join(lines) + "\n")
 
 
-def prepare(tasks: list, root: Path, *, dataset_root: Path | None = None) -> Path:
-    """Replace the fixed Harbor build only after its replacement is complete."""
+def prepare(tasks: list, root: Path, *, dataset_root: Path | None = None,
+            output: Path | None = None) -> Path:
+    """Build Harbor tasks into ``output`` (default ``artifacts/harbor``), replacing it
+    only after the new build is complete. Give each concurrent job its own ``output``."""
     if not tasks:
         raise ValueError("No tasks to prepare")
     if dataset_root is None:
         dataset_root = tasks[0].paths.task_dir.parent.parent
-    output = root / "artifacts/harbor"
+    output = output or root / "artifacts/harbor"
     output.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix=".harbor-build-", dir=output.parent) as directory:
         staging = Path(directory)

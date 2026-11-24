@@ -12,8 +12,9 @@ The task dataset is hosted on [Hugging Face](https://huggingface.co/datasets/mod
 ## Usage
 
 See the [main README](../README.md) for setup and run commands. Select tasks with
-`--task` or `--binder`; use `--n-attempts` for repetitions. Each run rebuilds
-`artifacts/harbor/`; use one launcher at a time.
+`--task` or `--binder`; use `--n-attempts` for repetitions. Each job builds its
+tasks in its own `artifacts/harbor/<job>/` folder, so runs can overlap; delete old
+folders there to free space.
 
 ## Grading and results
 

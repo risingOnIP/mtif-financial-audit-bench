@@ -1,0 +1,20 @@
+# Example setup file: one [[setup]] per harness + model combination.
+# Read with financial_audit_bench.benchmark.setups.load_setups (see docs/workstreams.md).
+# `name` is optional (default: "<harness>-<model>") and labels the setup in reports.
+
+[[setup]]
+name = "fab-opus"
+harness = "fab"
+model = "claude-opus-5-5"
+reasoning_effort = "medium"
+
+[[setup]]
+name = "fab-deepseek"
+harness = "fab"
+model = "openrouter/deepseek/deepseek-v4.1-flash"
+
+# Available once Workstream 1 lands the terminus-2 harness.
+# [[setup]]
+# name = "terminus-deepseek"
+# harness = "terminus-2"
+# model = "openrouter/deepseek/deepseek-v4.1-flash"
