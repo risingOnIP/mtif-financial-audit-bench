@@ -3,7 +3,7 @@
 This fork (`mtif-financial-audit-bench`) extends FAB so the same tasks and grading
 run across many harness + model setups, and the results are compared. The
 `serialize` branch holds the shared interface all three workstreams build on.
-Each workstream works on its own branch off `serialize` and can proceed in parallel.
+Each person creates their own branch off `serialize` and works in parallel.
 
 ## Get started
 
@@ -11,13 +11,14 @@ Each workstream works on its own branch off `serialize` and can proceed in paral
 git clone -b serialize https://github.com/risingOnIP/mtif-financial-audit-bench.git
 cd mtif-financial-audit-bench
 git remote add upstream https://github.com/modus-audit/financial-audit-bench.git
-git checkout ws1-harness        # or ws2-parallel-runs / ws3-results
+git checkout -b ws1-harness     # your own branch, e.g. ws2-parallel-runs / ws3-results
+git push -u origin ws1-harness
 uv sync
 cp .env.example .env            # add your API keys
 uv run pytest tests/test_setups_interface.py
 ```
 
-To push to these branches you need to be a collaborator on the fork (ask the
+To push your branch you need to be a collaborator on the fork (ask the
 fork owner). Without that, fork this repo yourself and open pull requests from your fork.
 
 ## The shared interface (do not change without telling the other workstreams)
@@ -36,7 +37,7 @@ Job folders are named `<run id>-<setup name>`, e.g. `...-fab-gpt-6-astra`.
 
 ## Who owns what
 
-| Branch | Workstream | Owns | Done when |
+| Suggested branch | Workstream | Owns | Done when |
 |---|---|---|---|
 | `ws1-harness` | 1. Harness integration | `benchmark/harnesses.py` (`terminus_2_agent`), task image changes in `benchmark/build.py` (e.g. adding `tmux`), passing the same audit notes from `benchmark/prompts.txt` to every harness, a short "adding a Harbor agent" guide | `fab run --harness terminus-2 --model ... --grade` runs and grades a task |
 | `ws2-parallel-runs` | 2. Models and parallel runs | A new command (e.g. `fab run-setups setups.toml`) in `cli.py` that builds one `RunContext` and calls `run_setup` for every setup in parallel, then writes `run.json` listing every job | One setup file with several setups produces graded results for all of them from one command |
